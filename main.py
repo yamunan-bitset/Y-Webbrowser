@@ -1,17 +1,16 @@
-#!/usr/bin/python3
+import socket
 
-from PyQt5.QtCore import * 
-from PyQt5.QtWidgets import * 
-from PyQt5.QtGui import * 
-from PyQt5.QtWebEngineWidgets import * 
-from PyQt5.QtPrintSupport import * 
-import os
-import sys
+url = "hasthelargehadroncolliderdestroyedtheworldyet.com" # Test
 
-from window import MainWindow
+web = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+web.connect((url, 80))
+cmd = str("GET http://" + url + " HTTP/1.0\r\n\r\n").encode()
+web.send(cmd)
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app.setApplicationName("Web Browser")
-    window = MainWindow()
-    app.exec_()
+while True:
+    data = web.recv(512)
+    if len(data) < 1:
+        break
+    print(data.decode(), end="")
+
+web.close()
